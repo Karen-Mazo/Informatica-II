@@ -77,7 +77,7 @@ string** estructuraUsuarios(string** usuarios, int& capacidad, int& cantidadUsua
             string saldo = linea.substr(pos2 + 1);
             // Expandir del arreglo
             if (cantidadUsuarios >= capacidad) {
-                capacidad += 1;
+                capacidad *= 2;
                 string** nuevoArreglo = new string*[capacidad];
                 // Copiar los datos al nuevo arreglo
                 for (int i = 0; i < cantidadUsuarios; i++) {
@@ -109,66 +109,7 @@ string** estructuraUsuarios(string** usuarios, int& capacidad, int& cantidadUsua
     return usuarios;
 }
 
-
-//Funciones para codificar
-string codificarUno(const int n,string& str_binario){
-    string codificados;
-    unsigned int tamanio = str_binario.size();
-    bool primerBloque = true;
-    string bloqueAnterior;
-    //Separo el contenido en n bits
-    for(unsigned int i = 0; i < tamanio; i += n){
-        string Bloque = str_binario.substr(i,n);
-        string bloqueOriginal = Bloque;
-        //Codifico el primer bloque
-        if(primerBloque){
-            for(char& bit : Bloque){
-                bit = (bit == '0') ? '1' : '0';
-            }
-            primerBloque = false;
-        }
-        //Codifico el resto de bloques
-        else{
-            //Cuento cantidad de ceros y unos
-            int ceros = 0, unos = 0;
-            for(char bit : bloqueAnterior){
-                if(bit == '0'){
-                    ceros++;
-                }
-                else if(bit == '1'){
-                    unos++;
-                }
-            }
-            //Regla uno
-            if(ceros == unos){
-                for(char& bit : Bloque){
-                    bit = (bit == '0') ? '1' : '0';
-                }
-            }
-
-            //Regla dos
-            else if(ceros > unos){
-                for(int i = 0; i < n; i += 2){
-                    if (i + 1 < n) {
-                        Bloque[i + 1] = (Bloque[i + 1] == '0') ? '1' : '0';
-                    }
-                }
-            }
-            //Regla tres
-            else{
-                for(int i = 0; i < n; i += 3){
-                    if (i + 2 < n) {
-                        Bloque[i + 2] = (Bloque[i + 2] == '0') ? '1' : '0';
-                    }
-                }
-            }
-        }
-        codificados += Bloque;
-        bloqueAnterior = bloqueOriginal;
-    }
-
-    return codificados;
-}
+//Funcion para codificar
 string codificarDos(const int n, string& str_binario){
     string codificados;
     unsigned int tamanio = str_binario.size();
@@ -186,65 +127,7 @@ string codificarDos(const int n, string& str_binario){
     return codificados;
 }
 
-//Funciones para decodificar
-string decodificarUno(const int n,string& contenido, string& original){
-    string decodificados;
-    unsigned int tamanio = contenido.size();
-    bool primerBloque = true;
-    string bloqueAnterior;
-    //Separo el contenido en n bits
-    for(unsigned int i = 0; i < tamanio; i += n){
-        string Bloque = contenido.substr(i,n);
-        string bloqueOriginal = original.substr(i,n);
-        //Decodifico el primer bloque
-        if(primerBloque){
-            for(char& bit : Bloque){
-                bit = (bit == '0') ? '1' : '0';
-            }
-            primerBloque = false;
-        }
-        //Decodifico el resto de bloques
-        else{
-            //Cuento cantidad de ceros y unos
-            int ceros = 0, unos = 0;
-            for(char bit : bloqueAnterior){
-                if(bit == '0'){
-                    ceros++;
-                }
-                else if(bit == '1'){
-                    unos++;
-                }
-            }
-            //Regla uno
-            if(ceros == unos){
-                for(char& bit : Bloque){
-                    bit = (bit == '0') ? '1' : '0';
-                }
-            }
-
-            //Regla dos
-            else if(ceros > unos){
-                for(int i = 0; i < n; i += 2){
-                    if (i + 1 < n) {
-                        Bloque[i + 1] = (Bloque[i + 1] == '0') ? '1' : '0';
-                    }
-                }
-            }
-            //Regla tres
-            else{
-                for(int i = 0; i < n; i += 3){
-                    if (i + 2 < n) {
-                        Bloque[i + 2] = (Bloque[i + 2] == '0') ? '1' : '0';
-                    }
-                }
-            }
-        }
-        decodificados += Bloque;
-        bloqueAnterior = bloqueOriginal;
-    }
-
-    return decodificados;
-}
+//Funcion para decodificar
 string decodificarDos(const int n, string& contenido){
     string decodificados;
     unsigned int tamanio = contenido.size();
@@ -261,8 +144,8 @@ string decodificarDos(const int n, string& contenido){
     }
     return decodificados;
 }
-
-//Funcion para saber por cual metodo deocodificar
+/*
+//Funcion para saber por cual metodo decodificar
 int detectarMetodo(const int n, string& claveEncriptada, string& claveOriginal) {
     string resultadoPrimerMetodo = decodificarUno(n, claveEncriptada, claveOriginal);
     if (resultadoPrimerMetodo == claveOriginal) {
@@ -274,37 +157,12 @@ int detectarMetodo(const int n, string& claveEncriptada, string& claveOriginal) 
     }
     return 0;
 }
-
+*/
 //Funcion para codificar los usuarios
-string codificarUsuarios(int n, string& binarioUsuarios, int metodo) {
+string codificarUsuarios(int n, string& binarioUsuarios) {
     string resultadoCodificado;
-    if (metodo == 1){
-        resultadoCodificado = codificarUno(n,binarioUsuarios);
-    }
-    else if (metodo == 2){
-        resultadoCodificado = codificarDos(n,binarioUsuarios);
-    }
-    else{
-        cout << "Metodo de codificacion no valido." << endl;
-        return "";
-    }
+    resultadoCodificado = codificarDos(n,binarioUsuarios);
     return resultadoCodificado;
-}
-
-//Funcion para decodificar clave de administrador
-string decodificarClave(int n,string& contenido, string& original, int metodo){
-    string claveDecodificada;
-    if(metodo == 1){
-        claveDecodificada = decodificarUno(n,contenido,original);
-    }
-    else if(metodo == 2){
-        claveDecodificada = decodificarDos(n,contenido);
-    }
-    else{
-        cout << "Metodo de decodificacion no valido." << endl;
-        return "";
-    }
-    return claveDecodificada;
 }
 
 //Actualizar el archivo de usuarios
@@ -328,18 +186,8 @@ bool verificarAdministrador(const int n, string& claveIngresada) {
     if (archivoSudo.is_open()) {
         getline(archivoSudo, claveEncriptada);
         archivoSudo.close();
-        // Verificar el metodo de codificación utilizado para desencriptar la clave
-        int metodo = detectarMetodo(n, claveEncriptada, claveIngresada);
-
         string claveDesencriptada;
-
-        if (metodo == 1) {
-            claveDesencriptada = decodificarUno(n, claveEncriptada, claveIngresada);
-        } else if (metodo == 2) {
-            claveDesencriptada = decodificarDos(n, claveEncriptada);
-        } else {
-            return false;
-        }
+        claveDesencriptada = decodificarDos(n, claveEncriptada);
         return claveDesencriptada == claveIngresada;
     } else {
         cout << "No se pudo abrir el archivo de sudo." << endl;
@@ -350,12 +198,14 @@ bool verificarAdministrador(const int n, string& claveIngresada) {
 //Funcion para consultar el saldo
 void consultarSaldo(string** usuarios, int numUsuarios, const string& cedula) {
     for (int i = 0; i < numUsuarios; i++) {
-        if (usuarios[i][0] == cedula) {
-            int saldoActual = stoi(usuarios[i][2]);
-            saldoActual -= 1000;
-            usuarios[i][2] = to_string(saldoActual);
-            cout << "Su saldo actual es: " << usuarios[i][2] << " COP" << endl;
-            return;
+        if (usuarios[i] != nullptr && !usuarios[i][0].empty()){
+            if (usuarios[i][0] == cedula) {
+                int saldoActual = stoi(usuarios[i][2]);
+                cout << "\nSu saldo actual es: " << saldoActual << " COP" << endl;
+                saldoActual -= 1000;
+                usuarios[i][2] = to_string(saldoActual);
+                return;
+            }
         }
     }
     cout << "Usuario no encontrado." << endl;
@@ -364,18 +214,20 @@ void consultarSaldo(string** usuarios, int numUsuarios, const string& cedula) {
 // Funcion para retirar dinero
 void retirarDinero(string** usuarios, int numUsuarios, const string& cedula, int cantidad) {
     for (int i = 0; i < numUsuarios; i++) {
-        if (usuarios[i][0] == cedula) {
-            int saldoActual = stoi(usuarios[i][2]);
-            // Verificar si hay suficiente saldo después de la tarifa
-            if (cantidad + 1000 > saldoActual) {
-                cout << "Fondos insuficientes. No puede retirar esta cantidad." << endl;
-            } else {
-                saldoActual -= (cantidad + 1000); // Restar cantidad y costo de transacción
-                usuarios[i][2] = to_string(saldoActual);
-                cout << "Retiro exitoso. Ha retirado " << cantidad << " COP." << endl;
-                cout << "Nuevo saldo: " << usuarios[i][2] << " COP" << endl;
+        if (usuarios[i] != nullptr && !usuarios[i][0].empty()){
+            if (usuarios[i][0] == cedula) {
+                int saldoActual = stoi(usuarios[i][2]);
+                // Verificar si hay suficiente saldo después de la tarifa
+                if (cantidad + 1000 > saldoActual) {
+                    cout << "\nFondos insuficientes. No puede retirar esta cantidad." << endl;
+                } else {
+                    saldoActual -= (cantidad + 1000); // Restar cantidad y costo de transacción
+                    usuarios[i][2] = to_string(saldoActual);
+                    cout << "\nRetiro exitoso. Ha retirado " << cantidad << " COP." << endl;
+                    cout << "Nuevo saldo: " << usuarios[i][2] << " COP" << endl;
+                    return;
+                }
             }
-            return;
         }
     }
     cout << "Usuario no encontrado." << endl;
@@ -383,77 +235,87 @@ void retirarDinero(string** usuarios, int numUsuarios, const string& cedula, int
 
 void menuAdministrador() {
     int opcion;
-    cout << "Menu de Administrador\n";
-    cout << "1. Agregar usuario\n";
-    cout << "2. Salir\n";
-    cout << "Ingrese su opcion: ";
-    cin >> opcion;
+    while(true){
+        cout << "\nMenu de Administrador\n";
+        cout << "1. Agregar usuario\n";
+        cout << "2. Salir\n";
+        cout << "Ingrese su opcion: ";
+        cin >> opcion;
 
-    switch (opcion) {
-    case 1:{
-        string cedula,clave,saldo;
-        cout << "Ingrese cedula: ";
-        cin >> cedula;
-        cout << "Ingrese clave: ";
-        cin >> clave;
-        cout << "Ingrese saldo inicial: ";
-        cin >> saldo;
-        // Agregar usuario
-        if (cantidadUsuarios >= capacidad) {
-            capacidad += 1;
-            string** nuevoArreglo = new string*[capacidad];
-            for (int i = 0; i < cantidadUsuarios; i++) {
-                nuevoArreglo[i] = usuarios[i];
+        switch (opcion) {
+        case 1:{
+            string cedula,clave,saldo;
+            cout << "Ingrese cedula: ";
+            cin >> cedula;
+            cout << "Ingrese clave: ";
+            cin >> clave;
+            cout << "Ingrese saldo inicial: ";
+            cin >> saldo;
+            // Agregar usuario
+            if (cantidadUsuarios >= capacidad) {
+                capacidad *= 2;
+                string** nuevoArreglo = new string*[capacidad];
+                for (int i = 0; i < cantidadUsuarios; i++) {
+                    nuevoArreglo[i] = usuarios[i];
+                }
+                delete[] usuarios; // Liberar memoria del arreglo antiguo
+                usuarios = nuevoArreglo; // Apuntar al nuevo arreglo
             }
-            delete[] usuarios; // Liberar memoria del arreglo antiguo
-            usuarios = nuevoArreglo; // Apuntar al nuevo arreglo
-        }
 
-        // Agregar el nuevo usuario al arreglo
-        usuarios[cantidadUsuarios] = new string[3];
-        usuarios[cantidadUsuarios][0] = cedula;
-        usuarios[cantidadUsuarios][1] = clave;
-        usuarios[cantidadUsuarios][2] = saldo;
-        cantidadUsuarios++;
-        actualizarArchivoUsuarios("usuarios.txt", usuarios, cantidadUsuarios);
-        cout << "Usuario registrado." << endl;
-        break;
-    }
-    case 2:
-        cout << "Saliendo del menu de administrador...\n";
-        break;
-    default:
-        cout << "Opcion no valida. Intente de nuevo.\n";
-        break;
+            // Agregar el nuevo usuario al arreglo
+            usuarios[cantidadUsuarios] = new string[3];
+            usuarios[cantidadUsuarios][0] = cedula;
+            usuarios[cantidadUsuarios][1] = clave;
+            usuarios[cantidadUsuarios][2] = saldo;
+            cantidadUsuarios++;
+            actualizarArchivoUsuarios("usuarios.txt", usuarios, cantidadUsuarios);
+            cout << "Usuario registrado." << endl;
+            break;
+        }
+        case 2:
+            cout << "Saliendo del menu de administrador...\n";
+            break;
+        default:
+            cout << "Opcion no valida. Intente de nuevo.\n";
+            break;
+        }
+        if (opcion == 2){
+            break;
+        }
     }
 }
 
 void menuUsuario(string**usuarios, int cantidadUsuarios,string& cedula) {
     int opcion;
-    cout << "Menu de Usuario\n";
-    cout << "1. Consultar saldo\n";
-    cout << "2. Retirar dinero\n";
-    cout << "3. Salir\n";
-    cout << "Ingrese su opcion: ";
-    cin >> opcion;
-    switch (opcion) {
-    case 1:
-        consultarSaldo(usuarios, cantidadUsuarios, cedula);
-        actualizarArchivoUsuarios("usuarios.txt",usuarios,cantidadUsuarios);
-        break;
-    case 2:
-        int cantidad;
-        cout << "Ingrese cantidad a retirar: ";
-        cin >> cantidad;
-        retirarDinero(usuarios, cantidadUsuarios, cedula, cantidad);
-        actualizarArchivoUsuarios("usuarios.txt",usuarios,cantidadUsuarios);
-        break;
-    case 3:
-        cout << "Saliendo del menu de usuario...\n";
-        break;
-    default:
-        cout << "Opcion no valida. Intente de nuevo.\n";
-        break;
+    while(true){
+        cout << "\nMenu de Usuario\n";
+        cout << "1. Consultar saldo\n";
+        cout << "2. Retirar dinero\n";
+        cout << "3. Salir\n";
+        cout << "Ingrese su opcion: ";
+        cin >> opcion;
+        switch (opcion) {
+        case 1:
+            consultarSaldo(usuarios, cantidadUsuarios, cedula);
+            actualizarArchivoUsuarios("usuarios.txt",usuarios,cantidadUsuarios);
+            break;
+        case 2:
+            int cantidad;
+            cout << "Ingrese cantidad a retirar: ";
+            cin >> cantidad;
+            retirarDinero(usuarios, cantidadUsuarios, cedula, cantidad);
+            actualizarArchivoUsuarios("usuarios.txt",usuarios,cantidadUsuarios);
+            break;
+        case 3:
+            cout << "Saliendo del menu de usuario...\n";
+            break;
+        default:
+            cout << "Opcion no valida. Intente de nuevo.\n";
+            break;
+        }
+        if (opcion == 3){
+            break;
+        }
     }
 }
 
@@ -465,7 +327,6 @@ int main(){
         usuarios[i] = new string[3];
     }
     const int n = 4;
-    int metodo = 0;
     // Cargar usuarios desde el archivo
     string contenido = leerArchivoPorLinea("usuarios.txt");
     usuarios = estructuraUsuarios(usuarios, capacidad, cantidadUsuarios, contenido);
@@ -483,10 +344,8 @@ int main(){
             string claveAdmin;
             cout << "Ingrese la clave de administrador: ";
             cin >> claveAdmin;
-            string claveEncriptada = leerArchivoPorLinea("sudo.txt");
             string binarioClave = char2binario(claveAdmin);
             bool admin = verificarAdministrador(n,binarioClave);
-            metodo = detectarMetodo(n,claveEncriptada,binarioClave);
             if (admin) {
                 cout << "Acceso concedido como administrador." << endl;
                 menuAdministrador();
@@ -527,24 +386,16 @@ int main(){
             break;
         }
     }
-
-    if (metodo !=0 ) {
-        // Leer el contenido de "usuarios.txt" y convertirlo a binario
-        string contenidoUsuarios = leerArchivoPorLinea("usuarios.txt");
-        string binarioUsuarios = char2binario(contenidoUsuarios);
-
-        // Codificar los usuarios usando el metodo detectado
-        string usuariosCodificados = codificarUsuarios(n, binarioUsuarios,metodo);
-
-        // Guardar los usuarios codificados en "usuarioscodificados.txt"
-        escribirArchivo("usuarioscodificados.txt", usuariosCodificados);
-    } else {
-        cout << "No se codifico la informacion, metodo de codificacion no valido." << endl;
-    }
+    string contenidoUsuarios = leerArchivoPorLinea("usuarios.txt");
+    string binarioUsuarios = char2binario(contenidoUsuarios);
+    string usuariosCodificados = codificarUsuarios(n, binarioUsuarios);
+    escribirArchivo("usuarioscodificados.bin", usuariosCodificados);
 
     // Liberar memoria
     for (int i = 0; i < cantidadUsuarios; i++) {
-        delete[] usuarios[i];
+        if (usuarios[i] != nullptr){
+            delete[] usuarios[i];
+        }
     }
     delete[] usuarios;
 
