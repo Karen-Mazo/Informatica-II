@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Sistema.csv</file>
+    </qresource>
+</RCC>
